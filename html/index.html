@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Elevator</title>
+    <style>
+        body { margin: 0; }
+    </style>
+</head>
+<body>
+    <audio id="music" src="music.mp3" preload="auto"></audio>
+    <script>
+        let audio = document.getElementById('music');
+        let fadeOutDuration = 2000; 
+
+        function fadeOutAudio() {
+            let fadeOutInterval = 50; 
+            let fadeOutStep = fadeOutInterval / fadeOutDuration;
+            let volume = audio.volume;
+
+            function fadeOut() {
+                if (volume > 0) {
+                    volume -= fadeOutStep;
+                    if (volume < 0) volume = 0;
+                    audio.volume = volume;
+                    setTimeout(fadeOut, fadeOutInterval);
+                } else {
+                    audio.pause();
+                    audio.currentTime = 0;
+                }
+            }
+
+            fadeOut();
+        }
+
+        window.addEventListener('message', function(event) {
+            if (event.data.action === 'playSound') {
+                audio.volume = 0.4;
+                audio.play();
+            } else if (event.data.action === 'stopSound') {
+                fadeOutAudio();
+            }
+        });
+    </script>
+</body>
+</html>
